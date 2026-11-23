@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s);j.async=true;j.src="https://ibcwrinu.usv.stape.io/6gibcwrinu.js?"+i;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','90=HApUNSMuTz0iODshNDklTwNTW1xG');</script>
+<!-- End Google Tag Manager -->
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Inicialização do dataLayer/gtag + persistência de UTMs e Click IDs na sessão -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    // Persiste UTMs e Click IDs no sessionStorage para não perder na navegação
+    (function () {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const keys = [
+          'utm_source',
+          'utm_medium',
+          'utm_campaign',
+          'utm_content',
+          'utm_term',
+          'fbclid',
+          'gclid',
+          'gbraid',
+          'wbraid'
+        ];
+        keys.forEach(function (key) {
+          if (params.has(key)) {
+            sessionStorage.setItem(key, params.get(key));
+          }
+        });
+      } catch (_) {
+        // Ignora caso sessionStorage esteja indisponível
+      }
+    })();
+  </script>
+
+  <title>Treino Express — Caio Portela | Emagrecimento com Firmeza</title>
+  <meta name="description"
+    content="Treino Express por Caio Portela: treinos de 30 min no app MFIT com vídeos explicativos para proteger sua massa magra, firmeza e energia enquanto emagrece. Acesso vitalício." />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#0B0B0D" />
+
+  <!-- Open Graph / Compartilhamento -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Treino Express — Caio Portela" />
+  <meta property="og:description"
+    content="Proteja sua firmeza e massa magra em 30 min no App MFIT. Pagamento único e acesso vitalício." />
+  <!-- ASSET SLOT OG: Substitua pela URL da imagem de compartilhamento (1200x630) -->
+  <!-- <meta property="og:image" content="https://seudominio.com.br/assets/og-treino-express.jpg" /> -->
+
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+
+  <!-- Tipografia Editorial & Geométrica alinhada à identidade CAIO PORTELA -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Michroma&family=Outfit:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- STAPE SERVER-SIDE (sGTM) + GOOGLE ADS CAMPAIGN TRACKING -->
+  <script src="tracking.js"></script>
+</head>
+
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://ibcwrinu.usv.stape.io/ns.html?id=GTM-TWVRSCZG" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+  <!-- Barra dourada sutil de progresso de leitura -->
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <!-- =====================================================================
+       HEADER MINIMALISTA & FIXO
+       ===================================================================== -->
+  <header class="site-header" id="siteHeader">
+    <div class="container header-inner">
+      <a href="#topo" class="brand-lockup" aria-label="Caio Portela — Treino Express">
+        <img src="assets/logo-caio-portela.png" alt="Caio Portela" class="brand-logo" width="178" height="69" />
+      </a>
+
+      <nav class="header-nav" aria-label="Navegação principal">
+        <a href="#diagnostico">O Risco</a>
+        <a href="#metodo">O Método</a>
+        <a href="#depoimentos">Resultados</a>
+        <a href="#sobre">Caio Portela</a>
+        <a href="#duvidas">Dúvidas</a>
+      </nav>
+
+      <a href="#oferta" class="btn btn-gold btn-sm header-cta" data-track-cta="header_top">
+        Garantir Acesso
+        <span class="btn-arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </header>
+
+  <main id="topo">
+    <!-- ===================================================================
+         SEÇÃO 1: HERO — IMPACTO DIRETO + PALCO VSL
+         =================================================================== -->
+    <section class="hero" data-track-section="hero">
+      <div class="hero-bg-motif" aria-hidden="true"></div>
+
+      <div class="container hero-grid">
+        <!-- Coluna Copy -->
+        <div class="hero-content reveal">
+          <div class="eyebrow-pill">
+            <span class="eyebrow-dot" aria-hidden="true"></span>
+            <span>TREINO EXPRESS • APP MFIT</span>
+          </div>
+
+          <h1 class="hero-title">
+            A balança está descendo.
+            <span class="text-gold-gradient">Seu corpo está firmando — ou murchando?</span>
+          </h1>
+
+          <p class="hero-subtitle">
+            Emagrecer rápido sem o estímulo certo consome músculo junto com a gordura.
+            O <strong>Treino Express</strong> protege sua firmeza e energia em <strong>30 min</strong>, com vídeos do
+            Caio no App MFIT.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#oferta" class="btn btn-gold btn-lg" data-track-cta="hero_primary">
+              Blindar Minha Massa Magra
+              <span class="btn-arrow" aria-hidden="true">→</span>
+            </a>
+
+            <a href="#metodo" class="btn btn-ghost-dark btn-lg hero-secondary-btn" data-track-cta="hero_secondary">
+              Ver o app
+            </a>
+          </div>
+
+          <div class="hero-trust-row">
+            <span class="trust-item">
+              <svg class="trust-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M16.5 5.5L8.25 13.75L4 9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              R$ 197,90 único
+            </span>
+            <span class="trust-item">
+              <svg class="trust-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M16.5 5.5L8.25 13.75L4 9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Acesso vitalício
+            </span>
+            <span class="trust-item">
+              <svg class="trust-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M16.5 5.5L8.25 13.75L4 9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              Academia ou prédio
+            </span>
+          </div>
+        </div>
+
+        <!-- Coluna VSL -->
+        <div class="hero-media reveal reveal-delay-1">
+          <div class="vsl-frame" data-asset-slot="hero-vsl" data-video-src=""
+            data-video-title="VSL Oficial — Treino Express por Caio Portela">
+            <!--
+              ASSET SLOT: VSL PRINCIPAL (16:9)
+              Direção sugerida: Caio em ambiente limpo e iluminado (academia ou luz dourada na orla),
+              enquadramento plano médio, camisa neutra preta/grafite, olhar firme na lente.
+              Ativação: preencha data-video-src="assets/vsl.mp4" acima ou substitua .vsl-placeholder pelo <iframe>.
+            -->
+            <div class="vsl-placeholder" id="vslTrigger" role="button" tabindex="0"
+              aria-label="Reproduzir vídeo de apresentação do Treino Express">
+              <div class="vsl-grid-pattern" aria-hidden="true"></div>
+              <div class="vsl-badge-top">
+                <span class="slot-tag">VÍDEO • 2 MIN</span>
+                <span class="slot-meta">Áudio ON</span>
+              </div>
+
+              <div class="vsl-center">
+                <div class="play-orb" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="26" height="26">
+                    <path d="M8 5.14v14l11-7-11-7z" />
+                  </svg>
+                </div>
+                <p class="vsl-title">Assista antes de treinar hoje</p>
+                <p class="vsl-caption">Como manter firmeza e tônus durante o emagrecimento rápido.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Faixa de Prova Compacta (2x2 no mobile, 4 colunas no desktop) -->
+      <div class="container">
+        <div class="authority-strip reveal">
+          <div class="strip-item">
+            <span class="strip-number">+10 anos</span>
+            <span class="strip-desc">de prática real</span>
+          </div>
+          <div class="strip-item">
+            <span class="strip-number">+1.000</span>
+            <span class="strip-desc">alunos acompanhados</span>
+          </div>
+          <div class="strip-item">
+            <span class="strip-number">~30 min</span>
+            <span class="strip-desc">treinos diretos ao ponto</span>
+          </div>
+          <div class="strip-item">
+            <span class="strip-number">100% vídeo</span>
+            <span class="strip-desc">gravados pelo Caio</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SEÇÃO 2: O RISCO SILENCIOSO + CONTRASTE REAL
+         =================================================================== -->
+    <section class="section section-light" id="diagnostico" data-track-section="diagnostico">
+      <div class="container">
+        <div class="section-header center reveal">
+          <span class="section-eyebrow">O RISCO SILENCIOSO</span>
+          <h2 class="section-title">
+            Emagrecer sem estrutura <span class="text-gold-deep">custa caro.</span>
+          </h2>
+          <p class="section-subtitle">
+            Sem o sinal muscular certo, seu corpo perde massa magra junto com a gordura:
+          </p>
+        </div>
+
+        <div class="pain-grid">
+          <article class="pain-card reveal">
+            <div class="pain-index">01</div>
+            <h3 class="pain-title">Flacidez precoce</h3>
+            <p class="pain-text">O peso cai, mas braços, glúteos e abdômen perdem sustentação.</p>
+          </article>
+
+          <article class="pain-card reveal reveal-delay-1">
+            <div class="pain-index">02</div>
+            <h3 class="pain-title">Energia drenada</h3>
+            <p class="pain-text">Treinos longos esgotam quem já está comendo menos calorias.</p>
+          </article>
+
+          <article class="pain-card reveal reveal-delay-2">
+            <div class="pain-index">03</div>
+            <h3 class="pain-title">Esforço sem retorno</h3>
+            <p class="pain-text">Só esteira ou ficha genérica não segura sua musculatura.</p>
+          </article>
+
+          <article class="pain-card reveal reveal-delay-3">
+            <div class="pain-index">04</div>
+            <h3 class="pain-title">Efeito rebote</h3>
+            <p class="pain-text">Menos músculo significa metabolismo lento quando a dieta relaxa.</p>
+          </article>
+        </div>
+
+        <p class="pain-bridge reveal">
+          Você não precisa treinar mais horas. <strong>Precisa do estímulo exato.</strong>
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SEÇÃO 3: O MÉTODO + SIMULADOR INTERATIVO DO APP MFIT PERSONAL
+         =================================================================== -->
+    <section class="section section-dark" id="metodo" data-track-section="metodo">
+      <div class="container method-layout">
+        <!-- Esquerda: Mecanismo Direto -->
+        <div class="method-copy reveal">
+          <span class="section-eyebrow eyebrow-gold">COMO FUNCIONA</span>
+          <h2 class="section-title text-light">
+            Dose exata de estímulo.
+            <span class="text-gold-gradient">Sem morar na academia.</span>
+          </h2>
+          <p class="section-subtitle text-muted-light">
+            Protocolo único, pronto no <strong>App MFIT</strong>. Você abre o celular, assiste ao vídeo e treina com
+            autonomia.
+          </p>
+
+          <div class="method-pillars">
+            <div class="pillar-item">
+              <div class="pillar-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 7v5l3 2" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div>
+                <h3>30 a 35 min sem enrolação</h3>
+                <p>Intensidade inteligente que cabe na rotina e respeita sua energia.</p>
+              </div>
+            </div>
+
+            <div class="pillar-item">
+              <div class="pillar-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <polygon points="9 7 18 12 9 17 9 7" stroke-linejoin="round" />
+                  <rect x="3" y="4" width="18" height="16" rx="3" />
+                </svg>
+              </div>
+              <div>
+                <h3>Vídeo do Caio em cada exercício</h3>
+                <p>Postura e ritmo explicados na prática — mesmo para iniciantes.</p>
+              </div>
+            </div>
+
+            <div class="pillar-item">
+              <div class="pillar-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <rect x="7" y="2" width="10" height="20" rx="2.5" />
+                  <path d="M11 18h2" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div>
+                <h3>Tudo organizado no App MFIT</h3>
+                <p>Séries, descanso e controle de cargas direto na palma da mão.</p>
+              </div>
+            </div>
+
+            <div class="pillar-item">
+              <div class="pillar-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M3 21h18M5 21V7l7-4 7 4v14" stroke-linejoin="round" />
+                  <path d="M9 21v-6h6v6" />
+                </svg>
+              </div>
+              <div>
+                <h3>Academia ou condomínio</h3>
+                <p>Pensado para equipamentos reais, sem depender de máquinas raras.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="method-cta-wrap">
+            <a href="#oferta" class="btn btn-gold btn-lg" data-track-cta="method_section">
+              Quero Meu Acesso no App
+              <span class="btn-arrow" aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Direita: Mockup Interativo do App MFIT Personal -->
+        <div class="method-phone-col reveal reveal-delay-1">
+          <div class="phone-stage">
+            <div class="phone-glow" aria-hidden="true"></div>
+            <div class="phone-device" aria-label="Demonstração interativa do Treino Express no aplicativo MFIT">
+              <div class="phone-notch" aria-hidden="true"></div>
+
+              <div class="phone-screen">
+                <div class="app-topbar">
+                  <div>
+                    <span class="app-brand-mini">MFIT PERSONAL • CAIO PORTELA</span>
+                    <strong class="app-title-mini">Treino Express</strong>
+                  </div>
+                  <span class="app-badge-vitalicio">VITALÍCIO</span>
+                </div>
+
+                <!-- Abas interativas de exemplo de sessão -->
+                <div class="app-tabs" role="tablist" aria-label="Sessões de demonstração">
+                  <button type="button" class="app-tab is-active" data-app-tab="a" role="tab" aria-selected="true">
+                    Sessão A
+                  </button>
+                  <button type="button" class="app-tab" data-app-tab="b" role="tab" aria-selected="false">
+                    Sessão B
+                  </button>
+                  <button type="button" class="app-tab" data-app-tab="c" role="tab" aria-selected="false">
+                    Sessão C
+                  </button>
+                </div>
+
+                <div class="app-session-meta" id="appSessionMeta">
+                  <span>Inferiores &amp; Glúteo</span>
+                  <span>~35 min</span>
+                </div>
+
+                <!-- Lista dinâmica preenchida via app.js -->
+                <ul class="app-exercise-list" id="appExerciseList"></ul>
+
+                <div class="app-footer-bar">
+                  <span class="app-tip-dot" aria-hidden="true"></span>
+                  <span>Toque em um exercício para ver a prévia</span>
+                </div>
+              </div>
+            </div>
+
+            <p class="phone-caption-note">
+              Prévia interativa do protocolo no App MFIT Personal.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SEÇÃO 4: AUTOIDENTIFICAÇÃO — PARA QUEM É
+         =================================================================== -->
+    <section class="section section-sand" data-track-section="para_quem">
+      <div class="container">
+        <div class="section-header center reveal">
+          <span class="section-eyebrow">É PARA VOCÊ?</span>
+          <h2 class="section-title">
+            Protocolo único. <span class="text-gold-deep">Adaptado ao seu ritmo.</span>
+          </h2>
+        </div>
+
+        <div class="audience-grid">
+          <article class="audience-card reveal">
+            <div class="audience-tag">01 • INICIANTES</div>
+            <h3>Começando do zero</h3>
+            <p>Vídeos claros em cada exercício para treinar seguro(a) desde o primeiro dia.</p>
+          </article>
+
+          <article class="audience-card reveal reveal-delay-1">
+            <div class="audience-tag">02 • ESTAGNADOS</div>
+            <h3>Treina sem ver firmeza</h3>
+            <p>Troque a ficha genérica por estímulo inteligente que responde no espelho.</p>
+          </article>
+
+          <article class="audience-card reveal reveal-delay-2">
+            <div class="audience-tag">03 • ROTINA CORRIDA</div>
+            <h3>Tempo e energia curtos</h3>
+            <p>Entre, execute em 30 min e siga o dia com disposição — sem esgotamento.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SEÇÃO 5: DEPOIMENTOS EM VÍDEO (CARROSSEL SWIPE NO MOBILE)
+         =================================================================== -->
+    <section class="section section-light" id="depoimentos" data-track-section="depoimentos">
+      <div class="container">
+        <div class="section-header center reveal">
+          <span class="section-eyebrow">RESULTADOS REAIS</span>
+          <h2 class="section-title">
+            Quem ajustou o estímulo <span class="text-gold-deep">viu no espelho.</span>
+          </h2>
+        </div>
+
+        <!--
+          ASSET SLOTS: VÍDEOS DE DEPOIMENTOS (9:16)
+          Preencha data-video-src="assets/depoimento-1.mp4" (ou URL de embed) e atualize nome/perfil/frase.
+        -->
+        <div class="testimonials-grid">
+          <article class="video-card reveal" data-asset-slot="depoimento-video-1" data-video-src=""
+            data-video-title="Depoimento 01 — Firmeza e energia" role="button" tabindex="0"
+            aria-label="Assistir depoimento em vídeo 1">
+            <div class="video-card-bg">
+              <div class="video-slot-badge">VÍDEO 01 • 9:16</div>
+              <div class="video-play-btn" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+                  <path d="M8 5.14v14l11-7-11-7z" />
+                </svg>
+              </div>
+              <span class="video-tap-hint">Toque para assistir</span>
+            </div>
+            <div class="video-card-overlay">
+              <p class="video-quote">“Em poucas semanas a firmeza voltou e minha energia no dia a dia mudou
+                completamente.”</p>
+              <div class="video-author">
+                <strong>[Nome da Aluna 01]</strong>
+                <span>Recreio / Barra • Condomínio</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="video-card reveal reveal-delay-1" data-asset-slot="depoimento-video-2" data-video-src=""
+            data-video-title="Depoimento 02 — Constância e praticidade" role="button" tabindex="0"
+            aria-label="Assistir depoimento em vídeo 2">
+            <div class="video-card-bg">
+              <div class="video-slot-badge">VÍDEO 02 • 9:16</div>
+              <div class="video-play-btn" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+                  <path d="M8 5.14v14l11-7-11-7z" />
+                </svg>
+              </div>
+              <span class="video-tap-hint">Toque para assistir</span>
+            </div>
+            <div class="video-card-overlay">
+              <p class="video-quote">“Nunca mantinha constância. Abrir o app, ver o vídeo do Caio e fazer em 30 min
+                resolveu.”</p>
+              <div class="video-author">
+                <strong>[Nome do Aluno 02]</strong>
+                <span>Barra da Tijuca • Rotina corrida</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="video-card reveal reveal-delay-2" data-asset-slot="depoimento-video-3" data-video-src=""
+            data-video-title="Depoimento 03 — Menos tempo, mais resultado" role="button" tabindex="0"
+            aria-label="Assistir depoimento em vídeo 3">
+            <div class="video-card-bg">
+              <div class="video-slot-badge">VÍDEO 03 • 9:16</div>
+              <div class="video-play-btn" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+                  <path d="M8 5.14v14l11-7-11-7z" />
+                </svg>
+              </div>
+              <span class="video-tap-hint">Toque para assistir</span>
+            </div>
+            <div class="video-card-overlay">
+              <p class="video-quote">“Parei de perder tempo com ficha genérica. Hoje treino menos e vejo resultado de
+                verdade.”</p>
+              <div class="video-author">
+                <strong>[Nome do Aluno 03]</strong>
+                <span>Aluno Treino Express • App MFIT</span>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <p class="mobile-swipe-hint" aria-hidden="true">← Arraste para ver mais depoimentos →</p>
+
+        <p class="compliance-footnote center">
+          * Relatos reais. Resultados variam conforme constância, alimentação e individualidade biológica.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SEÇÃO 6: AUTORIDADE — QUEM É CAIO PORTELA
+         =================================================================== -->
+    <section class="section section-dark about-section" id="sobre" data-track-section="sobre_caio">
+      <div class="container about-grid">
+        <!-- Retrato Editorial (4:5) -->
+        <div class="about-photo-col reveal">
+          <div class="photo-slot-frame" data-asset-slot="caio-portrait">
+            <!--
+              ASSET SLOT: FOTO EDITORIAL DO CAIO PORTELA (4:5 — 800x1000px)
+              Direção sugerida: Orla na luz dourada ou academia clean, camisa neutra, expressão firme e acolhedora.
+              Substitua .photo-placeholder por:
+              <img src="assets/caio-portela-retrato.jpg" alt="Treinador Caio Portela" class="slot-real-img" loading="lazy" />
+            -->
+            <div class="photo-placeholder">
+              <div class="slot-corner-badge">RETRATO CAIO • 4:5</div>
+              <img src="assets/logo-caio-portela-darkbg.png" alt="" class="placeholder-watermark-logo"
+                aria-hidden="true" />
+              <span class="photo-slot-caption">Espaço pronto para foto editorial (800×1000px)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Copy Enxuta & Forte -->
+        <div class="about-copy reveal reveal-delay-1">
+          <span class="section-eyebrow eyebrow-gold">SEU TREINADOR</span>
+          <h2 class="section-title text-light">Caio Portela</h2>
+          <p class="about-role">
+            Ex-dono de CT • +10 anos de prática • +1.000 alunos
+          </p>
+
+          <p class="about-text">
+            Em mais de uma década no campo de batalha do treinamento físico, vi o mesmo erro se repetir: pessoas
+            dedicadas perdendo peso rápido, mas perdendo <strong>firmeza, força e disposição</strong> junto. Criei o
+            <strong>Treino Express</strong> para entregar, sem rodeios, o protocolo que protege sua musculatura enquanto
+            você conquista sua melhor fase.
+          </p>
+
+          <blockquote class="about-quote">
+            “Nosso corpo é o nosso templo. Saúde de verdade é manter força, postura e energia para viver bem com quem
+            você ama.”
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SEÇÃO 7: A OFERTA — CLAREZA, ANCORAGEM E CONVERSÃO
+         =================================================================== -->
+    <section class="section section-offer" id="oferta" data-track-section="oferta">
+      <div class="container">
+        <div class="offer-wrapper reveal">
+          <!-- Coluna Esquerda: Resumo de Valor -->
+          <div class="offer-details">
+            <span class="section-eyebrow eyebrow-gold">PAGAMENTO ÚNICO • SEM MENSALIDADE</span>
+            <h2 class="offer-heading">
+              Leve o protocolo completo no seu celular
+            </h2>
+
+            <ul class="offer-checklist">
+              <li>
+                <span class="check-circle" aria-hidden="true">✓</span>
+                <strong>Protocolo Treino Express completo no App MFIT</strong>
+              </li>
+              <li>
+                <span class="check-circle" aria-hidden="true">✓</span>
+                <strong>Vídeos do Caio em 100% dos exercícios</strong>
+              </li>
+              <li>
+                <span class="check-circle" aria-hidden="true">✓</span>
+                <strong>Acesso vitalício — pague uma vez, use para sempre</strong>
+              </li>
+              <li>
+                <span class="check-circle" aria-hidden="true">✓</span>
+                <strong>Funciona em academia comercial ou condomínio</strong>
+              </li>
+            </ul>
+
+            <p class="offer-anchor">
+              Menos que o valor de 2 aulas avulsas de personal — com acesso para a vida toda.
+            </p>
+          </div>
+
+          <!-- Coluna Direita: Preço & Checkout -->
+          <div class="offer-card">
+            <div class="offer-card-top">
+              <img src="assets/logo-caio-portela-darkbg.png" alt="Caio Portela" class="offer-logo" width="148"
+                height="57" />
+              <span class="offer-tag">TREINO EXPRESS</span>
+            </div>
+
+            <div class="offer-price-block">
+              <span class="price-kicker">INVESTIMENTO ÚNICO</span>
+              <div class="price-main">
+                <span class="price-currency">R$</span>
+                <span class="price-integer">197</span>
+                <span class="price-cents">,90</span>
+              </div>
+              <p class="price-sub">Acesso vitalício • Zero mensalidade</p>
+            </div>
+
+            <!-- BLOCO DE CONDIÇÕES COMERCIAIS (CONFIGURÁVEL) -->
+            <div class="commercial-conditions-box" data-editable-slot="condicoes-comerciais">
+              <p class="conditions-text">
+                Pix ou cartão disponíveis no ambiente seguro de pagamento.
+              </p>
+            </div>
+
+            <a href="#checkout" class="btn btn-gold btn-xl btn-block js-checkout-link"
+              data-track-cta="offer_card_primary">
+              Garantir Meu Acesso Agora
+              <span class="btn-arrow" aria-hidden="true">→</span>
+            </a>
+
+            <div class="offer-security-row">
+              <span>
+                <svg viewBox="0 0 20 20" fill="none" width="15" height="15" aria-hidden="true">
+                  <rect x="4" y="9" width="12" height="8" rx="2" stroke="currentColor" stroke-width="1.6" />
+                  <path d="M7 9V6.5a3 3 0 016 0V9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                </svg>
+                Compra segura
+              </span>
+              <span>•</span>
+              <span>Liberação no App MFIT</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SEÇÃO 8: FAQ — OBJEÇÕES RESOLVIDAS EM 10 SEGUNDOS
+         =================================================================== -->
+    <section class="section section-light" id="duvidas" data-track-section="faq">
+      <div class="container container-narrow">
+        <div class="section-header center reveal">
+          <span class="section-eyebrow">DÚVIDAS RÁPIDAS</span>
+          <h2 class="section-title">
+            Tudo claro antes de <span class="text-gold-deep">começar</span>
+          </h2>
+        </div>
+
+        <div class="faq-list reveal">
+          <div class="faq-item">
+            <button type="button" class="faq-question" aria-expanded="false">
+              <span>Nunca treinei ou estou parado(a) há anos. Consigo fazer?</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer" hidden>
+              <p>
+                Sim. Todos os exercícios no app MFIT têm vídeo do Caio mostrando postura, movimento e ritmo passo a
+                passo.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button type="button" class="faq-question" aria-expanded="false">
+              <span>Funciona na academia do meu condomínio?</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer" hidden>
+              <p>
+                Sim. O protocolo foi desenhado para equipamentos reais de academias de bairro e condomínios.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button type="button" class="faq-question" aria-expanded="false">
+              <span>Estou com pouca energia. Os treinos são longos?</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer" hidden>
+              <p>
+                Não. São sessões de ~30 min com volume calibrado para proteger seus músculos sem drenar seu dia.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button type="button" class="faq-question" aria-expanded="false">
+              <span>Serve para homens e mulheres? Como funciona o protocolo único?</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer" hidden>
+              <p>
+                Sim. A base muscular é completa e a adaptação individual acontece pela sua carga e progressão no próprio
+                app.
+              </p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button type="button" class="faq-question" aria-expanded="false">
+              <span>Como recebo o acesso e por quanto tempo posso usar?</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer" hidden>
+              <p>
+                Confirmada a inscrição, você recebe o acesso ao App MFIT Personal. O pagamento é único (R$ 197,90) e o
+                acesso é <strong>vitalício</strong>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         SEÇÃO 9: CHAMADA FINAL
+         =================================================================== -->
+    <section class="section section-final-cta" data-track-section="cta_final">
+      <div class="container final-cta-inner reveal">
+        <h2 class="final-cta-title">
+          Não deixe a flacidez estragar a sua conquista.
+        </h2>
+        <p class="final-cta-sub">
+          Acesso vitalício no App MFIT por R$ 197,90. Comece ainda hoje.
+        </p>
+        <a href="#checkout" class="btn btn-gold btn-xl js-checkout-link" data-track-cta="final_banner">
+          Garantir Meu Treino Express
+          <span class="btn-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- =====================================================================
+       FOOTER — COMPLIANCE GOOGLE ADS & LGPD
+       ===================================================================== -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="assets/logo-caio-portela-darkbg.png" alt="Caio Portela" class="footer-logo" width="156" height="60"
+          loading="lazy" />
+        <p class="footer-tagline">
+          Treino Express • App MFIT Personal
+        </p>
+      </div>
+
+      <div class="footer-links">
+        <button type="button" class="footer-link-btn" data-open-modal="privacidade">
+          Política de Privacidade
+        </button>
+        <span aria-hidden="true">•</span>
+        <button type="button" class="footer-link-btn" data-open-modal="termos">
+          Termos de Uso
+        </button>
+        <span aria-hidden="true">•</span>
+        <button type="button" class="footer-link-btn" id="reopenConsentBtn">
+          Cookies
+        </button>
+      </div>
+
+      <div class="footer-disclaimer">
+        <p>
+          <strong>Aviso Importante:</strong> O Treino Express é um programa de orientação de exercícios físicos
+          com finalidade educativa e de condicionamento corporal. Não constitui diagnóstico, prescrição médica
+          ou tratamento de saúde, e não substitui acompanhamento médico ou nutricional individualizado. Consulte
+          um profissional de saúde antes de iniciar qualquer rotina de atividade física. Resultados variam de
+          pessoa para pessoa.
+        </p>
+        <p class="footer-copy">
+          © <span id="currentYear">2026</span> Caio Portela — Todos os direitos reservados. Este site não é
+          afiliado ao Google LLC, Meta Platforms Inc. ou a qualquer marca farmacêutica.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Barra fixa inferior exclusiva para Mobile (aparece após o Hero) -->
+  <div class="mobile-sticky-bar" id="mobileStickyBar" aria-hidden="true">
+    <div class="sticky-price">
+      <span class="sticky-label">Vitalício</span>
+      <strong>R$ 197,90</strong>
+    </div>
+    <a href="#checkout" class="btn btn-gold btn-sm js-checkout-link" data-track-cta="mobile_sticky">
+      Garantir Agora →
+    </a>
+  </div>
+
+  <!-- MODAL DE VÍDEO (VSL & DEPOIMENTOS) + DETALHE APP MFIT -->
+  <div class="modal-backdrop" id="mediaModal" hidden role="dialog" aria-modal="true" aria-labelledby="mediaModalTitle">
+    <div class="modal-dialog modal-media">
+      <div class="modal-header">
+        <h3 id="mediaModalTitle">Prévia de Vídeo</h3>
+        <button type="button" class="modal-close" data-close-modal aria-label="Fechar janela">×</button>
+      </div>
+      <div class="modal-body" id="mediaModalBody"></div>
+    </div>
+  </div>
+
+  <!-- MODAL LEGAL (PRIVACIDADE / TERMOS — GOOGLE ADS) -->
+  <div class="modal-backdrop" id="legalModal" hidden role="dialog" aria-modal="true" aria-labelledby="legalModalTitle">
+    <div class="modal-dialog modal-legal">
+      <div class="modal-header">
+        <h3 id="legalModalTitle">Informações Legais</h3>
+        <button type="button" class="modal-close" data-close-modal aria-label="Fechar janela">×</button>
+      </div>
+      <div class="modal-body legal-prose" id="legalModalBody"></div>
+    </div>
+  </div>
+
+  <!-- MODAL DE PRÉ-CHECKOUT (5 CAMPOS MFIT + REDIRECIONAMENTO ASAAS) -->
+  <div class="modal-backdrop" id="modal-treino-express" hidden role="dialog" aria-modal="true"
+    aria-labelledby="checkoutModalTitle">
+    <div class="modal-dialog modal-checkout">
+      <div class="modal-header">
+        <div class="precheckout-header-copy">
+          <span class="precheckout-eyebrow">ACESSO APP MFIT PERSONAL</span>
+          <h3 id="checkoutModalTitle">Finalize seu pré-cadastro</h3>
+        </div>
+        <button type="button" class="modal-close" data-close-modal aria-label="Fechar janela">×</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="precheckout-subtitle">
+          Informe seus dados para criarmos seu login no <strong>App MFIT</strong> assim que o pagamento for confirmado.
+        </p>
+
+        <form id="form-pre-checkout" class="precheckout-form" novalidate>
+          <div class="precheckout-field">
+            <label for="lead-nome">Nome completo</label>
+            <input type="text" id="lead-nome" name="nome" placeholder="Seu nome completo" autocomplete="name" required />
+          </div>
+
+          <div class="precheckout-field">
+            <label for="lead-email">Melhor e-mail</label>
+            <input type="email" id="lead-email" name="email" placeholder="seuemail@exemplo.com" autocomplete="email"
+              required />
+          </div>
+
+          <div class="precheckout-field">
+            <label for="lead-whatsapp">WhatsApp com DDD</label>
+            <input type="tel" id="lead-whatsapp" name="whatsapp" placeholder="(21) 99999-9999" inputmode="numeric"
+              autocomplete="tel" maxlength="15" required />
+          </div>
+
+          <div class="precheckout-row">
+            <div class="precheckout-field">
+              <label for="lead-nascimento">Data de nascimento</label>
+              <input type="text" id="lead-nascimento" name="nascimento" placeholder="DD/MM/AAAA" inputmode="numeric"
+                maxlength="10" autocomplete="bday" required />
+            </div>
+
+            <div class="precheckout-field">
+              <label for="lead-genero">Gênero</label>
+              <select id="lead-genero" name="genero" required>
+                <option value="" disabled selected>Selecione...</option>
+                <option value="Feminino">Feminino</option>
+                <option value="Masculino">Masculino</option>
+              </select>
+            </div>
+          </div>
+
+          <p class="precheckout-error" id="precheckoutError" role="alert" hidden></p>
+
+          <button type="submit" id="btn-submit-lead" class="btn btn-gold btn-lg btn-block">
+            IR PARA O PAGAMENTO SEGURO
+            <span class="btn-arrow" aria-hidden="true">→</span>
+          </button>
+
+          <button type="button" class="precheckout-cancel" data-close-modal>
+            Cancelar
+          </button>
+
+          <p class="precheckout-trust">
+            Pagamento único de <strong>R$ 197,90</strong> em ambiente seguro. Seus dados são protegidos conforme a LGPD
+            e usados exclusivamente para liberar seu acesso no App MFIT.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- BANNER DE CONSENTIMENTO LGPD + GOOGLE CONSENT MODE v2 -->
+  <aside class="consent-banner" id="consentBanner" hidden role="region"
+    aria-label="Preferências de privacidade e cookies">
+    <div class="consent-text">
+      <strong>Sua privacidade importa.</strong>
+      Usamos cookies essenciais e de medição conforme a LGPD.
+    </div>
+    <div class="consent-actions">
+      <button type="button" class="btn btn-ghost-light btn-xs" id="consentEssentialBtn">
+        Essenciais
+      </button>
+      <button type="button" class="btn btn-gold btn-xs" id="consentAcceptBtn">
+        Aceitar
+      </button>
+    </div>
+  </aside>
+
+  <script src="app.js" defer></script>
+</body>
+
+</html>
