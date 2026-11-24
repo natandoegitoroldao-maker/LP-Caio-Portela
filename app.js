@@ -700,41 +700,53 @@
       });
     }
 
-    // 2. Webhook opcional Google Apps Script (Planilha) com keepalive
-    const webhookUrl =
-      tracking && tracking.config && tracking.config.appsScriptWebhookUrl
-        ? String(tracking.config.appsScriptWebhookUrl).trim()
-        : "";
+    // 2. Dispara para a planilha antes de redirecionar ao Asaas
+    function getCookie(name) {
+      try {
+        const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+        return match ? decodeURIComponent(match[2]) : "";
+      } catch (_) {
+        return "";
+      }
+    }
 
-    if (webhookUrl && typeof window.fetch === "function") {
+    const SHEETS_WEBHOOK_URL =
+      "https://script.google.com/macros/s/AKfycbwUC80PtkRo6jHemPbgwaAg05HYZJ1C5V9r7M5EtVe3FF6AiDDJn4z8KQZJ0grp6wN6dg/exec";
+
+    const leadData = {
+      first_name: userData.fn,
+      last_name: userData.ln,
+      email: userData.em,
+      phone: userData.ph,
+      birth_date: userData.db,
+      gender: userData.ge,
+    };
+
+    if (typeof window.fetch === "function") {
       try {
         window
-          .fetch(webhookUrl, {
+          .fetch(SHEETS_WEBHOOK_URL, {
             method: "POST",
             mode: "no-cors",
             keepalive: true,
             headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify({
-              nome: formData.nome,
-              email: userData.em,
-              whatsapp: userData.ph,
-              nascimento: formData.nascimento,
-              genero: formData.genero,
-              event_id: eventId,
-              cta_location: activeCheckoutCtaLocation,
-              utm_source: attribution.utm_source,
-              utm_medium: attribution.utm_medium,
-              utm_campaign: attribution.utm_campaign,
-              utm_content: attribution.utm_content,
-              utm_term: attribution.utm_term,
-              fbclid: attribution.fbclid,
-              gclid: attribution.gclid,
-              gbraid: attribution.gbraid,
-              wbraid: attribution.wbraid,
-              submitted_at: new Date().toISOString(),
+              first_name: leadData.first_name,
+              last_name: leadData.last_name,
+              email: leadData.email,
+              phone: leadData.phone,
+              birth_date: leadData.birth_date,
+              gender: leadData.gender,
+              fbclid: attribution.fbclid || "",
+              fbp: getCookie("_fbp"),
+              fbc: getCookie("_fbc"),
+              utm_source: attribution.utm_source || "",
+              utm_medium: attribution.utm_medium || "",
+              utm_campaign: attribution.utm_campaign || "",
+              utm_content: attribution.utm_content || "",
             }),
           })
-          .catch(function () { });
+          .catch(function () {});
       } catch (_) {
         // Não bloqueia o redirecionamento em caso de falha de rede
       }
