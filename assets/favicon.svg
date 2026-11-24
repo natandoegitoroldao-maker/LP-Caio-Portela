@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="cpGold" x1="8" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E5B962"/>
+      <stop offset="55%" stop-color="#C79C42"/>
+      <stop offset="100%" stop-color="#9A7220"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#0B0B0D"/>
+  <path d="M23 14L11 32L23 50L35 32L23 14Z" stroke="url(#cpGold)" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M25 22L19 32L25 42L31 32L25 22Z" stroke="url(#cpGold)" stroke-width="3.2" stroke-linejoin="round"/>
+  <path d="M37 18L46 32L37 46" stroke="#E5B962" stroke-opacity="0.65" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M46 22L53 32L46 42" stroke="#E5B962" stroke-opacity="0.32" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
