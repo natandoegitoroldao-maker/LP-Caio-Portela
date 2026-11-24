@@ -213,10 +213,10 @@
         openMediaModal(
           ex.name + " — Prévia Técnica (App MFIT)",
           '<div class="modal-placeholder-box">' +
-            "<h4>Vídeo Demonstrativo do Caio Portela no App MFIT</h4>" +
-            "<p><strong>Prescrição ilustrativa:</strong> " + ex.sets + "</p>" +
-            '<p style="margin-top:10px;"><strong>Foco técnico do protocolo:</strong> ' + ex.tip + "</p>" +
-            '<p style="margin-top:14px;font-size:0.82rem;opacity:0.8;">No aplicativo MFIT Personal você assiste à execução completa em vídeo, registra suas cargas e acompanha o cronômetro de descanso.</p>' +
+          "<h4>Vídeo Demonstrativo do Caio Portela no App MFIT</h4>" +
+          "<p><strong>Prescrição ilustrativa:</strong> " + ex.sets + "</p>" +
+          '<p style="margin-top:10px;"><strong>Foco técnico do protocolo:</strong> ' + ex.tip + "</p>" +
+          '<p style="margin-top:14px;font-size:0.82rem;opacity:0.8;">No aplicativo MFIT Personal você assiste à execução completa em vídeo, registra suas cargas e acompanha o cronômetro de descanso.</p>' +
           "</div>"
         );
         if (tracking) {
@@ -501,6 +501,256 @@
     return result;
   }
 
+  function generateEventIdFallback(prefix = "evt") {
+    if (tracking && typeof tracking.generateEventId === "function") {
+      return tracking.generateEventId(prefix);
+    }
+    return `${prefix}_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  }
+
+  function normalizeUserDataFallback(fullName, email, phone, birthDate, gender) {
+    if (tracking && typeof tracking.normalizeUserData === "function") {
+      return tracking.normalizeUserData(fullName, email, phone, birthDate, gender);
+    }
+    const cleanName = (fullName || "").trim().toLowerCase();
+    const nameParts = cleanName ? cleanName.split(/\s+/) : [];
+    const fn = nameParts[0] || "";
+    const ln = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+
+    let cleanPhone = (phone || "").replace(/\D/g, "");
+    if (cleanPhone.length === 10 || cleanPhone.length === 11) {
+      cleanPhone = "55" + cleanPhone;
+    }
+
+    let db = "";
+    const rawBirthDate = String(birthDate || "").trim();
+    const dateDigits = rawBirthDate.replace(/\D/g, "");
+    if (dateDigits.length === 8) {
+      if (
+        !rawBirthDate.includes("/") &&
+        /^(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$/.test(dateDigits)
+      ) {
+        db = dateDigits;
+      } else {
+        const dd = dateDigits.substring(0, 2);
+        const mm = dateDigits.substring(2, 4);
+        const yyyy = dateDigits.substring(4, 8);
+        db = `${yyyy}${mm}${dd}`;
+      }
+    }
+
+    let ge = "";
+    const gClean = (gender || "").trim().toLowerCase();
+    if (gClean.startsWith("f")) ge = "f";
+    if (gClean.startsWith("m")) ge = "m";
+
+    return {
+      em: (email || "").trim().toLowerCase(),
+      ph: cleanPhone,
+      fn: fn,
+      ln: ln,
+      db: db,
+      ge: ge,
+      country: "br",
+    };
+  }
+
+  function trackOpenCheckoutModal(ctaLocation) {
+    const location = ctaLocation || activeCheckoutCtaLocation || "checkout_cta";
+    if (tracking && typeof tracking.trackOpenCheckoutModal === "function") {
+      return tracking.trackOpenCheckoutModal(location);
+    }
+    const eventId = generateEventIdFallback("modal");
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "open_checkout_modal",
+      event_id: eventId,
+      cta_location: location,
+    });
+    return eventId;
+  }
+
+  function handleCheckoutSubmit(formData, asaasCheckoutUrl) {
+    const userData = normalizeUserDataFallback(
+      formData.nome,
+      formData.email,
+      formData.whatsapp,
+      formData.nascimento,
+      formData.genero
+    );
+    const eventId = generateEventIdFallback("chk");
+    const attribution = getSessionAttribution();
+    const trafficSource = attribution.utm_source || "direto";
+    const trafficMedium = attribution.utm_medium || "nenhum";
+    const trafficCampaign = attribution.utm_campaign || "nenhuma";
+
+    // Persiste no localStorage para eventual uso futuro na sessão
+    try {
+      window.localStorage.setItem("cp_user_data", JSON.stringify(userData));
+    } catch (_) {
+      // Fallback silencioso
+    }
+
+    // Monta URL oficial do Asaas com dados do lead, event_id e atribuição
+    let finalUrl = asaasCheckoutUrl || DEFAULT_ASAAS_CHECKOUT_URL;
+    try {
+      const checkoutUrl = new URL(finalUrl);
+      checkoutUrl.searchParams.set("name", formData.nome);
+      checkoutUrl.searchParams.set("email", userData.em);
+      checkoutUrl.searchParams.set("event_id", eventId);
+
+      ATTRIBUTION_KEYS.forEach(function (key) {
+        if (attribution[key] && !checkoutUrl.searchParams.has(key)) {
+          checkoutUrl.searchParams.set(key, attribution[key]);
+        }
+      });
+
+      finalUrl = checkoutUrl.toString();
+    } catch (_) {
+      // Fallback para URL base caso URL API falhe
+    }
+
+    // Controle de redirecionamento: aguarda no mínimo 400ms + conclusão das tags
+    // do GTM (com teto de segurança de 900ms) para evitar que /g/collect seja cancelado
+    let hasRedirected = false;
+    let minDelayDone = false;
+    let gtmCallbacksDone = !window.google_tag_manager;
+
+    function redirectToAsaas() {
+      if (hasRedirected) return;
+      hasRedirected = true;
+      window.location.href = finalUrl;
+    }
+
+    function onGtmEventsComplete() {
+      gtmCallbacksDone = true;
+      if (minDelayDone) {
+        redirectToAsaas();
+      }
+    }
+
+    // 1. Dispara begin_checkout_treino + begin_checkout (GA4/Meta) no dataLayer
+    if (tracking && typeof tracking.trackPreCheckout === "function") {
+      tracking.trackPreCheckout({
+        event_id: eventId,
+        cta_location: activeCheckoutCtaLocation,
+        traffic_source: trafficSource,
+        traffic_medium: trafficMedium,
+        traffic_campaign: trafficCampaign,
+        attribution: attribution,
+        nome: formData.nome,
+        email: formData.email,
+        whatsapp: formData.whatsapp,
+        nascimento: formData.nascimento,
+        genero: formData.genero,
+        user_data: userData,
+        eventCallback: onGtmEventsComplete,
+        eventTimeout: 600,
+      });
+    } else {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: "begin_checkout_treino",
+        event_id: eventId,
+        value: 197.9,
+        currency: "BRL",
+        traffic_source: trafficSource,
+        traffic_medium: trafficMedium,
+        traffic_campaign: trafficCampaign,
+        cta_location: activeCheckoutCtaLocation,
+        email: userData.em,
+        phone: userData.ph,
+        first_name: userData.fn,
+        last_name: userData.ln,
+        birth_date: userData.db,
+        gender: userData.ge,
+        user_data: userData,
+        eventCallback: onGtmEventsComplete,
+        eventTimeout: 600,
+      });
+      window.dataLayer.push({ ecommerce: null });
+      window.dataLayer.push({
+        event: "begin_checkout",
+        event_id: eventId,
+        value: 197.9,
+        currency: "BRL",
+        cta_location: activeCheckoutCtaLocation,
+        email: userData.em,
+        phone: userData.ph,
+        first_name: userData.fn,
+        last_name: userData.ln,
+        birth_date: userData.db,
+        gender: userData.ge,
+        user_data: userData,
+        ecommerce: {
+          currency: "BRL",
+          value: 197.9,
+          items: [
+            {
+              item_id: "treino-express-caio-portela",
+              item_name: "Treino Express - Caio Portela (App MFIT)",
+              item_brand: "Caio Portela",
+              item_category: "Treinamento Online",
+              price: 197.9,
+              currency: "BRL",
+              quantity: 1,
+            },
+          ],
+        },
+      });
+    }
+
+    // 2. Webhook opcional Google Apps Script (Planilha) com keepalive
+    const webhookUrl =
+      tracking && tracking.config && tracking.config.appsScriptWebhookUrl
+        ? String(tracking.config.appsScriptWebhookUrl).trim()
+        : "";
+
+    if (webhookUrl && typeof window.fetch === "function") {
+      try {
+        window
+          .fetch(webhookUrl, {
+            method: "POST",
+            mode: "no-cors",
+            keepalive: true,
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({
+              nome: formData.nome,
+              email: userData.em,
+              whatsapp: userData.ph,
+              nascimento: formData.nascimento,
+              genero: formData.genero,
+              event_id: eventId,
+              cta_location: activeCheckoutCtaLocation,
+              utm_source: attribution.utm_source,
+              utm_medium: attribution.utm_medium,
+              utm_campaign: attribution.utm_campaign,
+              utm_content: attribution.utm_content,
+              utm_term: attribution.utm_term,
+              fbclid: attribution.fbclid,
+              gclid: attribution.gclid,
+              gbraid: attribution.gbraid,
+              wbraid: attribution.wbraid,
+              submitted_at: new Date().toISOString(),
+            }),
+          })
+          .catch(function () { });
+      } catch (_) {
+        // Não bloqueia o redirecionamento em caso de falha de rede
+      }
+    }
+
+    // 3. Mantém a janela mínima de 400ms (e callback do GTM até 900ms) antes de redirecionar ao Asaas
+    window.setTimeout(function () {
+      minDelayDone = true;
+      if (gtmCallbacksDone) {
+        redirectToAsaas();
+      }
+    }, 400);
+
+    window.setTimeout(redirectToAsaas, 900);
+  }
+
   function abrirModalTreino(ctaLocation) {
     if (!checkoutModal) return;
 
@@ -516,17 +766,7 @@
     checkoutModal.hidden = false;
     document.body.style.overflow = "hidden";
 
-    if (tracking && typeof tracking.pushEvent === "function") {
-      tracking.pushEvent("open_checkout_modal", {
-        cta_location: activeCheckoutCtaLocation,
-      });
-    } else {
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({
-        event: "open_checkout_modal",
-        cta_location: activeCheckoutCtaLocation,
-      });
-    }
+    trackOpenCheckoutModal(activeCheckoutCtaLocation);
 
     if (leadNomeInput) {
       window.requestAnimationFrame(function () {
@@ -623,7 +863,7 @@
         return;
       }
 
-      // Trava o botão e higieniza payload final
+      // Trava o botão e delega normalização, eventos e redirecionamento
       clearPreCheckoutError();
       isSubmittingPreCheckout = true;
       if (submitLeadBtn) {
@@ -631,147 +871,21 @@
         submitLeadBtn.textContent = "Redirecionando...";
       }
 
-      const nameParts = nome.split(" ");
-      const firstName = nameParts[0] || "";
-      const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
-      const whatsappNormalized = "55" + whatsappDigits;
-      const attribution = getSessionAttribution();
-      const eventId =
-        tracking && typeof tracking.generateEventId === "function"
-          ? tracking.generateEventId()
-          : "evt_" + Date.now() + "_" + Math.random().toString(36).slice(2, 9);
-
-      const trafficSource = attribution.utm_source || "direto";
-      const trafficMedium = attribution.utm_medium || "nenhum";
-      const trafficCampaign = attribution.utm_campaign || "nenhuma";
-
-      // 1. Dispara begin_checkout_treino + begin_checkout (GA4) no dataLayer
-      if (tracking && typeof tracking.trackPreCheckout === "function") {
-        tracking.trackPreCheckout({
-          event_id: eventId,
-          cta_location: activeCheckoutCtaLocation,
-          traffic_source: trafficSource,
-          traffic_medium: trafficMedium,
-          traffic_campaign: trafficCampaign,
-          attribution: attribution,
-          user_data: {
-            email: email,
-            phone_number: whatsappNormalized,
-            first_name: firstName,
-            last_name: lastName,
-          },
-        });
-      } else {
-        const userData = {
-          email: email,
-          phone_number: whatsappNormalized,
-          first_name: firstName,
-          last_name: lastName,
-        };
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-          event: "begin_checkout_treino",
-          event_id: eventId,
-          value: 197.9,
-          currency: "BRL",
-          traffic_source: trafficSource,
-          traffic_medium: trafficMedium,
-          traffic_campaign: trafficCampaign,
-          cta_location: activeCheckoutCtaLocation,
-          user_data: userData,
-        });
-        window.dataLayer.push({ ecommerce: null });
-        window.dataLayer.push({
-          event: "begin_checkout",
-          event_id: eventId,
-          cta_location: activeCheckoutCtaLocation,
-          user_data: userData,
-          ecommerce: {
-            currency: "BRL",
-            value: 197.9,
-            items: [
-              {
-                item_id: "treino-express-caio-portela",
-                item_name: "Treino Express - Caio Portela (App MFIT)",
-                item_brand: "Caio Portela",
-                item_category: "Treinamento Online",
-                price: 197.9,
-                currency: "BRL",
-                quantity: 1,
-              },
-            ],
-          },
-        });
-      }
-
-      // 2. Webhook opcional Google Apps Script (Planilha) com keepalive
-      const webhookUrl =
-        tracking && tracking.config && tracking.config.appsScriptWebhookUrl
-          ? String(tracking.config.appsScriptWebhookUrl).trim()
-          : "";
-
-      if (webhookUrl && typeof window.fetch === "function") {
-        try {
-          window
-            .fetch(webhookUrl, {
-              method: "POST",
-              mode: "no-cors",
-              keepalive: true,
-              headers: { "Content-Type": "text/plain;charset=utf-8" },
-              body: JSON.stringify({
-                nome: nome,
-                email: email,
-                whatsapp: whatsappNormalized,
-                nascimento: nascimento,
-                genero: genero,
-                event_id: eventId,
-                cta_location: activeCheckoutCtaLocation,
-                utm_source: attribution.utm_source,
-                utm_medium: attribution.utm_medium,
-                utm_campaign: attribution.utm_campaign,
-                utm_content: attribution.utm_content,
-                utm_term: attribution.utm_term,
-                fbclid: attribution.fbclid,
-                gclid: attribution.gclid,
-                gbraid: attribution.gbraid,
-                wbraid: attribution.wbraid,
-                submitted_at: new Date().toISOString(),
-              }),
-            })
-            .catch(function () {});
-        } catch (_) {
-          // Não bloqueia o redirecionamento em caso de falha de rede
-        }
-      }
-
-      // 3. Monta URL oficial do Asaas com dados do lead, event_id e atribuição
       const baseCheckoutUrl =
         tracking && tracking.config && tracking.config.checkoutUrl
           ? String(tracking.config.checkoutUrl).trim()
           : DEFAULT_ASAAS_CHECKOUT_URL;
 
-      let finalUrl = baseCheckoutUrl || DEFAULT_ASAAS_CHECKOUT_URL;
-      try {
-        const checkoutUrl = new URL(finalUrl);
-        checkoutUrl.searchParams.set("name", nome);
-        checkoutUrl.searchParams.set("email", email);
-        checkoutUrl.searchParams.set("event_id", eventId);
-
-        ATTRIBUTION_KEYS.forEach(function (key) {
-          if (attribution[key] && !checkoutUrl.searchParams.has(key)) {
-            checkoutUrl.searchParams.set(key, attribution[key]);
-          }
-        });
-
-        finalUrl = checkoutUrl.toString();
-      } catch (_) {
-        // Fallback para URL base caso URL API falhe
-      }
-
-      // 4. Aguarda 300ms para garantir envio dos beacons (GTM/Stape/Webhook) e redireciona
-      window.setTimeout(function () {
-        window.location.href = finalUrl;
-      }, 300);
+      handleCheckoutSubmit(
+        {
+          nome: nome,
+          email: email,
+          whatsapp: whatsappDigits,
+          nascimento: nascimento,
+          genero: genero,
+        },
+        baseCheckoutUrl || DEFAULT_ASAAS_CHECKOUT_URL
+      );
     });
   }
 

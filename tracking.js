@@ -84,6 +84,7 @@
     lastTouch: "cp_attr_last",
     firstTouch: "cp_attr_first",
     consent: "cp_consent_v2",
+    userData: "cp_user_data",
   };
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -100,12 +101,56 @@
     );
   }
 
-  // Gerador de UUID v4 para deduplicação client/server no Stape sGTM
-  function generateEventId() {
-    if (window.crypto && typeof window.crypto.randomUUID === "function") {
-      return window.crypto.randomUUID();
+  // 1. Gera um ID único para desduplicação entre Pixel Web e CAPI Server
+  function generateEventId(prefix = "evt") {
+    return `${prefix}_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+  }
+
+  // 2. Normaliza dados primários no padrão exigido pela Meta (EMQ > 9.0) e GA4
+  function normalizeUserData(fullName, email, phone, birthDate, gender) {
+    const cleanName = (fullName || "").trim().toLowerCase();
+    const nameParts = cleanName ? cleanName.split(/\s+/) : [];
+    const fn = nameParts[0] || "";
+    const ln = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+
+    let cleanPhone = (phone || "").replace(/\D/g, "");
+    if (cleanPhone.length === 10 || cleanPhone.length === 11) {
+      cleanPhone = "55" + cleanPhone;
     }
-    return "cp-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
+
+    // Normaliza DD/MM/AAAA para YYYYMMDD (padrão Meta CAPI/Pixel)
+    let db = "";
+    const rawBirthDate = String(birthDate || "").trim();
+    const dateDigits = rawBirthDate.replace(/\D/g, "");
+    if (dateDigits.length === 8) {
+      if (
+        !rawBirthDate.includes("/") &&
+        /^(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$/.test(dateDigits)
+      ) {
+        db = dateDigits;
+      } else {
+        const dd = dateDigits.substring(0, 2);
+        const mm = dateDigits.substring(2, 4);
+        const yyyy = dateDigits.substring(4, 8);
+        db = `${yyyy}${mm}${dd}`;
+      }
+    }
+
+    // Normaliza Gênero para 'f' ou 'm' (padrão Meta CAPI/Pixel)
+    let ge = "";
+    const gClean = (gender || "").trim().toLowerCase();
+    if (gClean.startsWith("f")) ge = "f";
+    if (gClean.startsWith("m")) ge = "m";
+
+    return {
+      em: (email || "").trim().toLowerCase(),
+      ph: cleanPhone,
+      fn: fn,
+      ln: ln,
+      db: db,
+      ge: ge,
+      country: "br",
+    };
   }
 
   // Utilitários de Cookie First-Party (acessível no servidor Stape via HTTP header)
@@ -328,8 +373,9 @@
   // ==========================================================================
   let attributionState = null;
 
-  function pushEvent(eventName, extraData) {
-    const eventId = (extraData && extraData.event_id) || generateEventId();
+  function pushEvent(eventName, extraData, eventIdPrefix) {
+    const eventId =
+      (extraData && extraData.event_id) || generateEventId(eventIdPrefix || "evt");
     const payload = Object.assign(
       {
         event: eventName,
@@ -359,45 +405,59 @@
 
   function sanitizeUserData(raw) {
     const data = raw || {};
-    const fullName = String(data.nome || data.name || "")
-      .trim()
-      .replace(/\s+/g, " ");
-    const parts = fullName ? fullName.split(" ") : [];
-    const firstName = String(data.first_name || parts[0] || "").trim();
-    const lastName = String(
-      data.last_name !== undefined
-        ? data.last_name
-        : parts.length > 1
-          ? parts.slice(1).join(" ")
-          : ""
-    ).trim();
+    const fullName =
+      data.nome ||
+      data.name ||
+      [data.fn || data.first_name || "", data.ln || data.last_name || ""]
+        .filter(Boolean)
+        .join(" ");
+    const email = data.em || data.email || "";
+    const phone = data.ph || data.phone_number || data.whatsapp || "";
+    const birthDate = data.db || data.nascimento || data.birth_date || "";
+    const gender = data.ge || data.genero || data.gender || "";
+    return normalizeUserData(fullName, email, phone, birthDate, gender);
+  }
 
-    const email = String(data.email || "").trim().toLowerCase();
-    let digits = String(data.phone_number || data.whatsapp || "").replace(/\D/g, "");
-    if (digits && !digits.startsWith("55")) {
-      digits = "55" + digits;
-    }
-
-    return {
-      email: email,
-      phone_number: digits,
-      first_name: firstName,
-      last_name: lastName,
-    };
+  function trackOpenCheckoutModal(ctaLocation) {
+    return pushEvent("open_checkout_modal", {
+      event_id: generateEventId("modal"),
+      cta_location: ctaLocation || "checkout_cta",
+    });
   }
 
   function trackPreCheckout(details) {
     const info = details || {};
-    const eventId = info.event_id || generateEventId();
-    const userData = sanitizeUserData(info.user_data || info);
+    const eventId = info.event_id || generateEventId("chk");
+    const userData = sanitizeUserData(
+      Object.assign({}, info, info.user_data || {})
+    );
     const attr = info.attribution || attributionState || {};
     const ctaLocation = info.cta_location || "checkout_cta";
     const trafficSource = info.traffic_source || attr.utm_source || "direto";
     const trafficMedium = info.traffic_medium || attr.utm_medium || "nenhum";
     const trafficCampaign = info.traffic_campaign || attr.utm_campaign || "nenhuma";
+    const hasCallback = typeof info.eventCallback === "function";
+    const eventTimeout = Number(info.eventTimeout) || 600;
+    let remainingCallbacks = hasCallback ? 2 : 0;
 
-    // 1. Evento begin_checkout_treino (contrato GTM Web -> Stape sGTM)
-    pushEvent("begin_checkout_treino", {
+    // Persiste no localStorage para eventual uso futuro na sessão
+    safeStorageSet(STORAGE_KEYS.userData, userData);
+
+    function createStepCallback() {
+      if (!hasCallback) return null;
+      let fired = false;
+      return function () {
+        if (fired) return;
+        fired = true;
+        remainingCallbacks -= 1;
+        if (remainingCallbacks <= 0) {
+          info.eventCallback();
+        }
+      };
+    }
+
+    // 1. Evento begin_checkout_treino (aciona CE - Begin Checkout Treino no GTM Web)
+    const treinoPayload = {
       event_id: eventId,
       value: TRACKING_CONFIG.product.price,
       currency: TRACKING_CONFIG.product.currency,
@@ -405,21 +465,49 @@
       traffic_medium: trafficMedium,
       traffic_campaign: trafficCampaign,
       cta_location: ctaLocation,
+      // Campos na raiz para leitura imediata pelas suas DLVs atuais
+      email: userData.em,
+      phone: userData.ph,
+      first_name: userData.fn,
+      last_name: userData.ln,
+      birth_date: userData.db,
+      gender: userData.ge,
+      // Objeto estruturado para Enhanced Conversions / GA4 / Stape CAPI
       user_data: userData,
-    });
+    };
+    if (hasCallback) {
+      treinoPayload.eventCallback = createStepCallback();
+      treinoPayload.eventTimeout = eventTimeout;
+    }
+    pushEvent("begin_checkout_treino", treinoPayload);
 
-    // 2. Evento padrão GA4 Ecommerce begin_checkout com mesmo event_id e user_data
+    // 2. Evento padrão GA4 Ecommerce / Meta begin_checkout com mesmo event_id e user_data
     window.dataLayer.push({ ecommerce: null });
-    pushEvent("begin_checkout", {
+    const ga4Payload = {
       event_id: eventId,
+      value: TRACKING_CONFIG.product.price,
+      currency: TRACKING_CONFIG.product.currency,
       cta_location: ctaLocation,
+      // Campos na raiz para leitura imediata pelas suas DLVs atuais
+      email: userData.em,
+      phone: userData.ph,
+      first_name: userData.fn,
+      last_name: userData.ln,
+      birth_date: userData.db,
+      gender: userData.ge,
+      // Objeto estruturado para Enhanced Conversions / GA4 / Stape CAPI
       user_data: userData,
       ecommerce: {
         currency: TRACKING_CONFIG.product.currency,
         value: TRACKING_CONFIG.product.price,
         items: [TRACKING_CONFIG.product],
       },
-    });
+    };
+    if (hasCallback) {
+      ga4Payload.eventCallback = createStepCallback();
+      ga4Payload.eventTimeout = eventTimeout;
+    }
+    pushEvent("begin_checkout", ga4Payload);
 
     return {
       event_id: eventId,
@@ -460,6 +548,9 @@
       window.dataLayer.push({ ecommerce: null });
 
       const eventId = pushEvent("begin_checkout", {
+        event_id: generateEventId("chk"),
+        value: TRACKING_CONFIG.product.price,
+        currency: TRACKING_CONFIG.product.currency,
         cta_location: ctaLocation,
         ecommerce: {
           currency: TRACKING_CONFIG.product.currency,
@@ -472,12 +563,14 @@
     }
 
     return pushEvent("cta_click", {
+      event_id: generateEventId("eng"),
       cta_location: ctaLocation,
     });
   }
 
   function trackVideo(slotName, title, action) {
     return pushEvent("video_engagement", {
+      event_id: generateEventId("eng"),
       video_slot: slotName,
       video_title: title,
       video_action: action || "play_click",
@@ -503,7 +596,11 @@
         milestones.forEach(function (mark) {
           if (percent >= mark && !reached.has(mark)) {
             reached.add(mark);
-            pushEvent("scroll_milestone", { scroll_percent: mark });
+            pushEvent("scroll_milestone", {
+              event_id: generateEventId("eng"),
+              scroll_percent: mark,
+              scroll_depth: mark,
+            });
           }
         });
       },
@@ -520,7 +617,10 @@
             const sectionName = entry.target.getAttribute("data-track-section");
             if (sectionName && !seenSections.has(sectionName)) {
               seenSections.add(sectionName);
-              pushEvent("section_view", { section_name: sectionName });
+              pushEvent("section_view", {
+                event_id: generateEventId("eng"),
+                section_name: sectionName,
+              });
             }
           });
         },
@@ -544,6 +644,10 @@
     has_gclid: Boolean(attributionState.gclid || attributionState.gbraid || attributionState.wbraid),
   });
 
+  pushEvent("meta_pageview", {
+    event_id: generateEventId("pv"),
+  });
+
   // Dispara view_item + observadores assim que o DOM estiver pronto
   document.addEventListener("DOMContentLoaded", function () {
     window.dataLayer.push({ ecommerce: null });
@@ -562,9 +666,11 @@
   window.CPTracking = {
     config: TRACKING_CONFIG,
     generateEventId: generateEventId,
+    normalizeUserData: normalizeUserData,
     sanitizeUserData: sanitizeUserData,
     pushEvent: pushEvent,
     trackCta: trackCta,
+    trackOpenCheckoutModal: trackOpenCheckoutModal,
     trackPreCheckout: trackPreCheckout,
     trackVideo: trackVideo,
     decorateCheckoutUrl: decorateCheckoutUrl,
