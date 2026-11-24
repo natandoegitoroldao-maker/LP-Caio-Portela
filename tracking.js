@@ -644,11 +644,7 @@
     has_gclid: Boolean(attributionState.gclid || attributionState.gbraid || attributionState.wbraid),
   });
 
-  pushEvent("meta_pageview", {
-    event_id: generateEventId("pv"),
-  });
-
-  // Dispara view_item + observadores assim que o DOM estiver pronto
+  // Dispara view_item + observadores + meta_pageview assim que o DOM estiver pronto
   document.addEventListener("DOMContentLoaded", function () {
     window.dataLayer.push({ ecommerce: null });
     pushEvent("view_item", {
@@ -660,6 +656,10 @@
     });
 
     bindAutoEngagementTracking();
+
+    pushEvent("meta_pageview", {
+      event_id: generateEventId("pv"),
+    });
   });
 
   // API pública para integração com app.js e testes manuais
